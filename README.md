@@ -1,6 +1,4 @@
-<img src="https://raw.githubusercontent.com/AndrewCarre/TrainCatcher/master/media/screenshots/main_menu_screenshot.png" width="200px">
-<img src="https://github.com/AndrewCarre/TrainCatcher/blob/master/media/screenshots/main_menu_screenshot.png" width="200px">
-<img src="https://raw.githubusercontent.com/AndrewCarre/TrainCatcher/master/media/screenshots/trainlist_screenshot.png" width="200px">
+<img src="https://raw.githubusercontent.com/AndrewCarre/TrainCatcher/master/media/screenshots/github_poster.png">
 
 # Train Catcher
 
