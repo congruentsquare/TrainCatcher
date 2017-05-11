@@ -1,0 +1,38 @@
+{
+  "project_info": {
+    "project_number": "1077691383358",
+    "project_id": "firebase-traincatcher"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1077691383358:android:0699487be687ee88",
+        "android_client_info": {
+          "package_name": "ninja.carre.trainCatcher2"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBmVkFCXDQI3mrsrq7Bs8JwHTKOnPtCi4E"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 2,
+          "analytics_property": {
+            "tracking_id": "UA-59850496-2"
+          }
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
