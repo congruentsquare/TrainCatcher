@@ -1,6 +1,6 @@
-![Main Menu](/media/Screenshots/mainmenu_screenshot.jpg?raw=true "Main Menu")
-![Train Map](/media/Screenshots/trainmap_screenshot.jpg?raw=true "Train Map")
-![Train List](/media/Screenshots/trainlist_screenshot.jpg?raw=true "Train List")
+![Main Menu](/media/Screenshots/mainmenu_screenshot.png?raw=true "Main Menu")
+![Train Map](/media/Screenshots/trainmap_screenshot.png?raw=true "Train Map")
+![Train List](/media/Screenshots/trainlist_screenshot.png?raw=true "Train List")
 
 # Train Catcher
 
