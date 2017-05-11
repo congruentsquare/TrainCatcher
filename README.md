@@ -1,6 +1,6 @@
-![Main Menu](https://raw.githubusercontent.com/AndrewCarre/TrainCatcher/master/media/screenshots/main_menu_screenshot.png "Main Menu")
-![Train Map](https://github.com/AndrewCarre/TrainCatcher/blob/master/media/screenshots/main_menu_screenshot.png "Train Map")
-![Train List](https://raw.githubusercontent.com/AndrewCarre/TrainCatcher/master/media/screenshots/trainlist_screenshot.png "Train List")
+<img src="https://raw.githubusercontent.com/AndrewCarre/TrainCatcher/master/media/screenshots/main_menu_screenshot.png" width="200px">
+<img src="https://github.com/AndrewCarre/TrainCatcher/blob/master/media/screenshots/main_menu_screenshot.png" width="200px">
+<img src="https://raw.githubusercontent.com/AndrewCarre/TrainCatcher/master/media/screenshots/trainlist_screenshot.png" width="200px">
 
 # Train Catcher
 
