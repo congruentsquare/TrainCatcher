@@ -691,8 +691,12 @@ import ninja.carre.trainCatcher2.map.TrainStationMap
 import timber.log.Timber
 import java.util.*
 import com.google.android.gms.ads.AdView
-
-
+import android.content.SharedPreferences
+import android.icu.util.Calendar
+import org.joda.time.DateTime
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import android.R.id.edit
 
 
 class MainActivity : Activity() {
@@ -715,41 +719,62 @@ class MainActivity : Activity() {
         top_layout?.setBackgroundColor(ContextCompat.getColor(this, R.color.material_grey_300))
         when ((Random().nextFloat() * 7).toInt()) {
             0 -> {
-                train_menu_image.background = resources.getDrawable(R.drawable.homescreen_blue_line, theme)
+                train_menu_image.background = resources.getDrawable(R.drawable.homescreen_blue_line)
                 button_background!!.setBackgroundColor(ContextCompat.getColor(this, R.color.mbta_blue))
             }
             1 -> {
-                train_menu_image.background = resources.getDrawable(R.drawable.homescreen_purple_line, theme)
+                train_menu_image.background = resources.getDrawable(R.drawable.homescreen_purple_line)
                 button_background!!.setBackgroundColor(ContextCompat.getColor(this, R.color.mbta_purple))
             }
             2 -> {
-                train_menu_image.background = resources.getDrawable(R.drawable.homescreen_red_line, theme)
+                train_menu_image.background = resources.getDrawable(R.drawable.homescreen_red_line)
                 button_background!!.setBackgroundColor(ContextCompat.getColor(this, R.color.mbta_red))
             }
             3 -> {
-                train_menu_image.background = resources.getDrawable(R.drawable.homescreen_bus_line, theme)
+                train_menu_image.background = resources.getDrawable(R.drawable.homescreen_bus_line)
                 button_background!!.setBackgroundColor(ContextCompat.getColor(this, R.color.mbta_blue))
             }
             4 -> {
-                train_menu_image.background = resources.getDrawable(R.drawable.homescreen_green_line, theme)
+                train_menu_image.background = resources.getDrawable(R.drawable.homescreen_green_line)
                 button_background!!.setBackgroundColor(ContextCompat.getColor(this, R.color.mbta_green))
             }
             5 -> {
-                train_menu_image.background = resources.getDrawable(R.drawable.homescreen_mattapan_line, theme)
+                train_menu_image.background = resources.getDrawable(R.drawable.homescreen_mattapan_line)
                 button_background!!.setBackgroundColor(ContextCompat.getColor(this, R.color.mbta_red))
             }
             6 -> {
-                train_menu_image.background = resources.getDrawable(R.drawable.homescreen_purple_line_train2, theme)
+                train_menu_image.background = resources.getDrawable(R.drawable.homescreen_purple_line_train2)
                 button_background!!.setBackgroundColor(ContextCompat.getColor(this, R.color.mbta_purple))
             }
         }
-        //Make sure gfts is up to date
-        var updateGftsData = Intent(this, Gfts::class.java)
-        updateGftsData.setAction(Gfts.ACTION_UPDATE_GFTS)
-        startService(updateGftsData)
+        updateGfts()
 
         train_gmap_button.setOnClickListener { startActivity(Intent(this@MainActivity, TrainStationMap::class.java)) }
         trainlines_button.setOnClickListener { startActivity(Intent(this@MainActivity, TrainListAct::class.java)) }
+    }
+
+    private fun updateGfts() {
+        val dateFormat = SimpleDateFormat("dd-mm-yyyy")
+        //Make sure gfts is up to date
+        val mPrefs = getSharedPreferences("mbta_settings", 0)
+        val dateStr = mPrefs.getString("last_gfts_update", "")
+        val lastDate =
+                if (!dateStr.isEmpty())
+                    dateFormat.parse(dateStr)
+                else
+                    Date(0L)
+        val threeMonthEpochTime = 1000 * 60 * 60 * 24 * 30 * 3
+        if (Date().time - lastDate.time > threeMonthEpochTime) {
+            Timber.i("Three months has passed, updating gfts")
+            var updateGftsData = Intent(this, Gfts::class.java)
+            updateGftsData.setAction(Gfts.ACTION_UPDATE_GFTS)
+            startService(updateGftsData)
+            val mEditor = mPrefs.edit()
+            mEditor.putString("last_gfts_update", dateFormat.format(Date())).commit()
+            return
+        } else {
+            Timber.i("Three months has NOT passed, NOT updating gfts")
+        }
     }
 
     companion object {

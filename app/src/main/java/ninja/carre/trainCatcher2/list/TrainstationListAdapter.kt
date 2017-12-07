@@ -700,6 +700,7 @@ import ninja.carre.trainCatcher2.R.id.*
 import ninja.carre.trainCatcher2.R.layout.trainstation_list_row
 import ninja.carre.trainCatcher2.gfts.Gfts
 import ninja.carre.trainCatcher2.gfts.StopR
+import ninja.carre.trainCatcher2.gfts.StopTimeUpdateR
 import ninja.carre.trainCatcher2.gfts.TripUpdateR
 import ninja.carre.trainCatcher2.helper.TrainStationBitCont
 import ninja.carre.trainCatcher2.mbtaFeed.PredictionByStopService
@@ -778,7 +779,7 @@ class TrainstationListAdapter(val context: Context, location: LatLng) : Recycler
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         if (StopTimes.isEmpty()) {
-            Timber.e("Stop updates are empty")
+            Timber.w("Stop updates are empty")
         }
         val entry = getIndex(position, list)
         if (entry == null || entry.value == null) {
@@ -794,9 +795,9 @@ class TrainstationListAdapter(val context: Context, location: LatLng) : Recycler
 
         holder.trainStationName.text = stop.stop_name
         StopTimes[stop]?.let {
-            val color = getTrainLineColor(it)
-            holder.trainStationName.setTextColor(color)
-            holder.headerCardView.setBackgroundColor(color)
+//            val color = getTrainLineColor(it)
+//            holder.trainStationName.setTextColor(color)
+//            holder.headerCardView.setBackgroundColor(color)
         }
         holder.mDistance.text = distanceStr
         holder.mArrow.rotation = azimuth!!  //TODO
@@ -982,6 +983,6 @@ class TrainstationListAdapter(val context: Context, location: LatLng) : Recycler
         private const val decimalPlaces = 1000000
         private val TAG = "TrainstationListAdapter"
         private val sdf = SimpleDateFormat("hh:mm")
-        @JvmStatic var StopTimes = ConcurrentHashMap<StopR, List<TripUpdateR>>()
+        @JvmStatic var StopTimes = ConcurrentHashMap<StopR, List<StopTimeUpdateR>>()
     }
 }

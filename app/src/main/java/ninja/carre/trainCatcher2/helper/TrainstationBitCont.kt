@@ -730,6 +730,38 @@ class TrainStationBitCont(context: Context) {
                     return TrainstationHeaders?.get(OrangeStation.STATE)
                 else if(station.stop_name.equals("Charles/MGH"))
                     return TrainstationHeaders?.get(RedStation.CHARLES_MGH)
+                else if(station.stop_name.equals("Newton Highlands"))
+                    return TrainstationHeaders?.get(GreenStation.NEWTON_HIGHLAND)
+                else if(station.stop_name.equals("Centre"))
+                    return TrainstationHeaders?.get(GreenStation.NEWTON_CENTER)
+                else if(station.stop_name.equals("Saint Marys Street"))
+                    return TrainstationHeaders?.get(GreenStation.ST_MARYS_STREET)
+                else if(station.stop_name.equals("Boston Univ. East"))
+                    return TrainstationHeaders?.get(GreenStation.BOSTON_UNIVERSITY_EAST)
+                else if(station.stop_name.equals("Boston Univ. Central"))
+                    return TrainstationHeaders?.get(GreenStation.BOSTON_UNIVERSITY_CENTRAL)
+                else if(station.stop_id.equals("place-newto"))
+                    return TrainstationHeaders?.get(GreenStation.NEWTON_CENTER)
+                else if(station.stop_id.equals("place-astao"))
+                    return TrainstationHeaders?.get(OrangeStation.ASSEMBLY)
+                else if(station.stop_id.equals("place-chill"))
+                    return TrainstationHeaders?.get(GreenStation.CHESTNUT_HILL_AVE)
+                else if(station.stop_id.equals("place-sthld"))
+                    return TrainstationHeaders?.get(GreenStation.SUTHERLAND_STREET)
+                else if(station.stop_id.equals("place-engav"))
+                    return TrainstationHeaders?.get(GreenStation.ENGLEWOOD_AVENUE)
+                else if(station.stop_id.equals("place-harvd"))
+                    return TrainstationHeaders?.get(GreenStation.HARVARD_AVENUE)
+                else if(station.stop_id.equals("place-buwst"))
+                    return TrainstationHeaders?.get(GreenStation.BOSTON_UNIVERSITY_WEST)
+                else if(station.stop_id.equals("place-fbkst"))
+                    return TrainstationHeaders?.get(GreenStation.FAIRBANKS)
+                else if(station.stop_id.equals("place-sumav"))
+                    return TrainstationHeaders?.get(GreenStation.SUMMIT_AVENUE)
+                else if(station.stop_id.equals("place-stplb"))
+                    return TrainstationHeaders?.get(GreenStation.ST_PAUL_STATION_B)
+                else if(station.stop_id.equals("place-stpul"))
+                    return TrainstationHeaders?.get(GreenStation.ST_PAUL_C)
                 throw NullPointerException("could not find ${station.stop_name}")
             }
             val result = TrainstationHeaders?.get(trainstation)
@@ -758,7 +790,11 @@ class TrainStationBitCont(context: Context) {
                 GreenStation.BROOKLINE_HILLS to R.drawable.header_brookline_hills_station__april_2016,
                 GreenStation.BOSTON_UNIVERSITY_CENTRAL to R.drawable.header_bu_central__april_2013,
                 GreenStation.BOSTON_UNIVERSITY_EAST to R.drawable.header_bu_east_sunny,
+                RedStationExtended.BUTLER to R.drawable.header_butler,
+                RedStationExtended.CAPEN_STREET to R.drawable.header_capen_street,
+                RedStationExtended.CEDAR_GROVE to R.drawable.header_cedar_grove_station,
                 RedStation.CENTRAL to R.drawable.header_central,
+                RedStationExtended.CENTRAL_AVENUE to R.drawable.header_central_avenue_station,
                 GreenStation.CHESTNUT_HILL_AVE to R.drawable.header_chestnut_hill_avenue__august_2016,
                 GreenStation.CHESTNUT_HILL to R.drawable.header_chestnut_hill_station__january_2014,
                 OrangeStation.CHINATOWN to R.drawable.header_chinatown_inbound,
@@ -770,6 +806,7 @@ class TrainStationBitCont(context: Context) {
                 RedStation.DAVIS_SQUARE to R.drawable.header_davis,
                 GreenStation.BROOKLINE_HILLS to R.drawable.header_dean_road_mbta_station_outbound__brookline_ma,
                 RedStation.DOWNTOWN_CROSSING to R.drawable.header_downtow_crossing,
+                GreenStation.DEAN_ROAD to R.drawable.header_dean_road,
                 GreenStation.ELIOT to R.drawable.header_eliot_station__march_2016,
                 GreenStation.ENGLEWOOD_AVENUE to R.drawable.header_englewood_avenue__december_2015,
                 GreenStation.FAIRBANKS to R.drawable.header_fairbanks_station__april_2016,
@@ -801,6 +838,7 @@ class TrainStationBitCont(context: Context) {
                 BlueStation.MAVERICK to R.drawable.header_maverick_station,
                 RedStation.CHARLES_MGH to R.drawable.header_mgh_station,
                 GreenStation.MISSION_PARK to R.drawable.header_mission_park,
+                RedStationExtended.MILTON to R.drawable.header_milton,
                 GreenStation.NEWTON_CENTER to R.drawable.header_newton_centre_station_hdr__march_2016,
                 GreenStation.NEWTON_HIGHLAND to R.drawable.header_newton_highlands_station__december_2015,
                 RedStation.NORTH_QUINCY to R.drawable.header_north_quincy,
@@ -809,6 +847,7 @@ class TrainStationBitCont(context: Context) {
                 GreenStation.NORTHEASTERN_UNIVERSITY to R.drawable.header_northeastern_mbta,
                 OrangeStation.OAK_GROVE to R.drawable.header_oak_grove_from_crossover,
                 BlueStation.ORIENT_HEIGHTS to R.drawable.header_orient_heights_station,
+                RedStationExtended.MATTAPAN to R.drawable.header_mattapan,
                 GreenStation.MUSEUM_OF_FINE_ARTS to R.drawable.header_outbound_tram_at_mfa_station,
                 GreenStation.PACKARDS_CORNER to R.drawable.header_packards_corner_station__april_2016,
                 RedStation.PARK_STREET to R.drawable.header_park_street,
@@ -847,7 +886,9 @@ class TrainStationBitCont(context: Context) {
                 BlueStation.BOWDOIN to R.drawable.header_terminating_train_at_bowdoin_station,
                 OrangeStation.TUFTS_MEDICAL_CENTER to R.drawable.header_tufts_medical_center_platforms,
                 GreenStation.BEACONSFIELD to R.drawable.header_waban_station_from_beacon_street__september_2015,
+                RedStationExtended.VALLEY_ROAD to R.drawable.header_valley_road_station,
                 GreenStation.WARREN_STREET to R.drawable.header_warren_street_stop_5,
+                GreenStation.WABAN to R.drawable.header_waban,
                 GreenStation.WASHINGTON_SQUARE to R.drawable.header_washington_square_station__april_2016,
                 OrangeStation.WELLINGTON to R.drawable.header_wellington,
                 RedStation.WOLLASTON to R.drawable.header_wollaston,

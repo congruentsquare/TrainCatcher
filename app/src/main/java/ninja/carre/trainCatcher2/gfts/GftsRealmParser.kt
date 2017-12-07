@@ -678,6 +678,7 @@
 package com.transitfeeds.gtfs
 
 import android.content.Context
+import android.os.Environment
 import android.widget.Toast
 import com.csvreader.CsvReader
 import com.google.android.gms.maps.model.LatLng
@@ -707,11 +708,13 @@ class GftsRealmParser(val context: Context) {
     private val mExclude = ArrayList<String>()
     var location: String? = null
     var realm: Realm? = null
+    val key = "!!ZfCY6fiWIntb1rczK1Q2\$wlUaAQu5DmDBZzneiUz@tk6S@0VFQdMIu\$fhQuP6o";
 
     init {
         val gftsFile = getLatestZip()
         if (gftsFile != null) {
             Realm.init(context)
+
             var config = RealmConfiguration.Builder().deleteRealmIfMigrationNeeded().build()
             realm = Realm.getInstance(config) as Realm
             mExclude.add("stop_times.txt")
@@ -720,6 +723,7 @@ class GftsRealmParser(val context: Context) {
             parseFiles()
             loadPolyLines()
             realm!!.close()
+
         }
     }
 
@@ -952,6 +956,10 @@ class GftsRealmParser(val context: Context) {
                 realmObjects = RealmList<RealmObject>()
             }
         }
+        realm!!.executeTransaction { r ->
+            Timber.i("${table} commiting ${realmObjects.size} to the ${table} table.")
+            r.copyToRealmOrUpdate(realmObjects)
+        }
     }
 
 
@@ -1016,8 +1024,6 @@ class GftsRealmParser(val context: Context) {
                 trackColors[shape.shape_id] = shape.color
         }
         TrackPolylineAdder.giveTrackList(trackList)
-//        updateTrackColors(shapesWithoutColor)
-//        TrackPolylineAdder.giveTrackColors(trackColors)
     }
 
     private fun updateTrackColors(shapes: List<ShapeR>) {
@@ -1036,6 +1042,7 @@ class GftsRealmParser(val context: Context) {
     fun exclude(filename: String) {
         mExclude.add(filename)
     }
+
 
     companion object {
         private val TABLES = arrayOf("agency", "agency_id TEXT, agency_name TEXT, agency_timezone TEXT, agency_url TEXT, agency_lang TEXT, agency_phone TEXT, agency_fare_url TEXT", "agency_id", "stops", "stop_index INTEGER, stop_id TEXT, stop_code TEXT, stop_name TEXT, stop_desc TEXT, zone_index INTEGER, zone_id TEXT, stop_lat REAL, stop_lon REAL, location_type INTEGER, parent_station TEXT, parent_station_index INTEGER, wheelchair_boarding INTEGER, stop_url TEXT, stop_timezone TEXT", "stop_index,stop_id,stop_code,zone_id,zone_index", "routes", "route_index INTEGER, route_id TEXT, agency_id TEXT, route_short_name TEXT, route_long_name TEXT, route_desc TEXT, route_type INTEGER, route_color TEXT, route_text_color TEXT, route_url TEXT", "route_index,route_id,agency_id", "trips", "trip_index INTEGER, route_index INTEGER, service_index INTEGER, service_id TEXT, shape_index INTEGER, shape_id TEXT, trip_id TEXT, trip_headsign TEXT, trip_short_name TEXT, direction_id INTEGER, block_index INTEGER, block_id TEXT, wheelchair_accessible INTEGER, departure_time TEXT, departure_time_secs INTEGER, arrival_time TEXT, arrival_time_secs INTEGER", "trip_index,route_index,service_index,shape_index,trip_id,block_index", "stop_times", "stop_index INTEGER, trip_index INTEGER, arrival_time TEXT, arrival_time_secs INTEGER, departure_time TEXT, departure_time_secs INTEGER, stop_sequence INTEGER, last_stop INTEGER, shape_dist_traveled REAL, stop_headsign TEXT, pickup_type INTEGER, drop_off_type INTEGER", "stop_index,trip_index", "calendar", "service_index INTEGER, service_id TEXT, monday INTEGER, tuesday INTEGER, wednesday INTEGER, thursday INTEGER, friday INTEGER, saturday INTEGER, sunday INTEGER, start_date TEXT, end_date TEXT", "service_index,service_id", "calendar_dates", "service_index INTEGER, service_id TEXT, date TEXT, exception_type INTEGER", "service_index", "shapes", "shape_index INTEGER, shape_id TEXT, shape_pt_lat REAL, shape_pt_lon REAL, shape_pt_sequence INTEGER, shape_dist_traveled REAL", "shape_index,shape_id", "fare_attributes", "fare_index INTEGER, fare_id TEXT, price TEXT, currency_type TEXT, payment_method TEXT, transfers TEXT, transfer_duration TEXT", "fare_index,fare_id", "fare_rules", "fare_index INTEGER, route_index INTEGER, origin_index INTEGER, destination_index INTEGER, contains_index INTEGER", "fare_index", "frequencies", "trip_index INTEGER, start_time TEXT, end_time TEXT, headway_secs TEXT, exact_times TEXT", "trip_index", "transfers", "from_stop_index INTEGER, to_stop_index INTEGER, transfer_type TEXT, min_transfer_time TEXT", "from_stop_index,to_stop_index", "feed_info", "feed_publisher_name TEXT, feed_publisher_url TEXT, feed_lang TEXT, feed_start_date TEXT, feed_end_date TEXT, feed_version TEXT", "")

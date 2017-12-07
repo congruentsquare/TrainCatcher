@@ -679,14 +679,15 @@ package ninja.carre.trainCatcher2.gfts
 
 import android.content.Context
 import com.google.transit.realtime.GtfsRealtime
+import com.google.transit.realtime.GtfsRealtime.FeedMessage.parseFrom
 import io.realm.Realm
 import io.realm.RealmConfiguration
 import ninja.carre.trainCatcher2.activities.TrainstationListAdapter
 import ninja.carre.trainCatcher2.helper.AsyncDownloader
+import okhttp3.OkHttpClient
+import okhttp3.Request
 import timber.log.Timber
-import java.io.BufferedInputStream
-import java.io.FileInputStream
-import java.io.IOException
+import java.io.*
 import java.net.URL
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
@@ -701,103 +702,92 @@ class GftsRealRealmParser(val context: Context) {
     init {
         Realm.init(context)
         val config = RealmConfiguration.Builder().deleteRealmIfMigrationNeeded().build()
-        AsyncDownloader(context, null, { f ->
-            if (f == null)
-                Timber.e("Failed to download GftsRealTripUpdate")
-            else {
-                var inputStream = BufferedInputStream(FileInputStream(f))
+        downloadAndCommit(config)
+    }
+
+    private fun downloadAndCommit(config: RealmConfiguration?) {
+        val httpClient = OkHttpClient()
+        val call = httpClient.newCall(Request.Builder().url(GFTS_REALTIME_TRIP_URL).get().build())
+        val urlStr = GFTS_REALTIME_TRIP_URL.toString()
+        val fileName = urlStr.substring(urlStr.lastIndexOf('/') + 1, urlStr.length)
+        val file = File(context.filesDir, fileName)
+        try {
+            val response = call.execute()
+            if (response.code() === 200) {
+                var inputStream: InputStream? = null
+                val outputStream = FileOutputStream(file)
                 try {
-                    var feed = GtfsRealtime.FeedMessage.parseFrom(inputStream)
-                    var feedr: FeedMessageR? = FeedMessageR(feed)
-                    feed = null
-                    val realm = Realm.getInstance(config)
-                    realm!!.executeTransaction {
-                        Timber.i("Committing ${feedr!!.entityList.size} trip updates to the realtime db")
-                        realm.copyToRealmOrUpdate(feedr)
-                        feedr = null
-                        var stopUpdates = ConcurrentHashMap<StopR, List<TripUpdateR>>()
-                        for(stop in StopR.ALL_STATIONS) {
-                            val allTripUpdates = realm.where(TripUpdateR::class.java).findAll()
-                            var relevantTripUpdates = ArrayList<TripUpdateR>()
-                            for(tu in allTripUpdates) {
-                                for(stu in tu.stop_time_update) {
-                                    if(stu.stop_id==stop.stop_id)
-                                        relevantTripUpdates.add(tu)
-                                }
-                            }
-                            stopUpdates.put(stop, relevantTripUpdates)
+                    inputStream = response.body().byteStream()
+                    val buff = ByteArray(1024 * 4)
+                    var downloaded: Long = 0
+                    val target = response.body().contentLength()
+                    while (true) {
+                        val readed = inputStream!!.read(buff)
+                        if (readed == -1) {
+                            break
                         }
-                        TrainstationListAdapter.StopTimes.putAll(stopUpdates)
+                        outputStream.write(buff, 0, readed)
+                        //write buff
+                        downloaded += readed.toLong()
+//                        if (isCancelled) {
+//                            fileListener(null)
+//                            return false
+//                        }
                     }
-                    realm.close()
-                } catch (e: IOException) {
-                    Timber.e(e.message, e)
-                    e.printStackTrace()
-                } catch(e: Exception) {
-                    Timber.e(e.message, e)
-                    e.printStackTrace()
+                    Timber.i("Download successful: ${file}")
+                } catch (ignore: IOException) {
+                    Timber.e("Failed to download: ${file}")
+                } finally {
+                    if (inputStream != null) {
+                        inputStream.close()
+                    }
+                    outputStream.flush()
+                    outputStream.close()
                 }
+            } else {
+                Timber.e("Failed to download: ${file}")
             }
-        }).execute(URL(GFTS_REALTIME_TRIP_URL)).get(30, TimeUnit.SECONDS)
-
-//        AsyncDownloader(context, null, { f ->
-//            if (f == null)
-//                Timber.e("Failed to download vehicle positions")
-//            else {
-//                var inputStream = BufferedInputStream(FileInputStream(f))
-//                try {
-//                    var vehicleUpdates:GtfsRealtime.FeedMessage? = GtfsRealtime.FeedMessage.parseFrom(inputStream)
-//                    var feedr:FeedMessageR? = FeedMessageR(vehicleUpdates!!)
-//                    vehicleUpdates = null
-//                    val realm = Realm.getInstance(config)
-//                    realm!!.executeTransaction {
-//                        Timber.i("Committing ${feedr!!.entityList.size} service alerts to the realtime db")
-//                        realm?.copyToRealmOrUpdate(feedr)
-//                    }
-//                    feedr = null
-//                    realm.close()
-//                } catch (e: IOException) {
-//                    Timber.e(e.message, e)
-//                    e.printStackTrace()
-//                } catch(e: Exception) {
-//                    Timber.e(e.message, e)
-//                    e.printStackTrace()
-//                }
-//            }
-//        }).execute(URL(MBTA_GFTS_REALTIME_VEHICLE_POSITIONS)).get(30, TimeUnit.SECONDS)
-
-//        AsyncDownloader(context, null, { f ->
-//            if (f == null)
-//                Timber.e("Failed to download ServiceUpdates")
-//            else {
-//                var inputStream = BufferedInputStream(FileInputStream(f))
-//                try {
-//                    var serviceUpdates:GtfsRealtime.FeedMessage? = GtfsRealtime.FeedMessage.parseFrom(inputStream)
-//                    var feedMessageR:FeedMessageR? = FeedMessageR(serviceUpdates!!)
-//                    serviceUpdates = null
-//                    val realm = Realm.getInstance(config)
-//                    Timber.i("Committing ${serviceUpdates!!.entityList.size} service updates to the realtime db")
-//                    realm!!.executeTransaction {
-//                        realm?.copyToRealmOrUpdate(feedMessageR)
-//                    }
-//                    feedMessageR = null
-//                    realm.close()
-//                } catch (e: IOException) {
-//                    Timber.e(e.message, e)
-//                    e.printStackTrace()
-//                } catch(e: Exception) {
-//                    Timber.e(e.message, e)
-//                    e.printStackTrace()
-//                }
-//            }
-//        }).execute(URL(MBTA_GFTS_REALTIME_SERVICE_ALERTS)).get(30, TimeUnit.SECONDS)
-
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Timber.e("Failed to download: ${file}")
+        }
+        if (file == null)
+            Timber.e("Failed to download GftsRealTripUpdate")
+        else {
+            var inputStream = BufferedInputStream(FileInputStream(file))
+            try {
+                var feed = parseFrom(inputStream)
+                var feedr: FeedMessageR? = FeedMessageR(feed)
+                val realm = Realm.getInstance(config)
+                realm!!.executeTransaction {
+                    Timber.i("Committing ${feedr!!.entityList.size} trip updates to the realtime db")
+                    realm.copyToRealmOrUpdate(feedr)
+                    feedr = null
+                    for (stop in StopR.ALL_STATIONS) {
+//                        var relevantTripUpdates = realm.where(TripUpdateR::class.java).findAll()
+//                        stopUpdates.put(stop, relevantTripUpdates) TODO
+                    }
+//                    TrainstationListAdapter.StopTimes.putAll(stopUpdates)
+                }
+                realm.close()
+            } catch (e: IOException) {
+                Timber.e(e.message, e)
+                e.printStackTrace()
+            } catch (e: Exception) {
+                Timber.e(e.message, e)
+                e.printStackTrace()
+            }
+        }
     }
 
     companion object {
-        @JvmField val GFTS_REALTIME_TRIP_URL = "http://developer.mbta.com/lib/GTRTFS/Alerts/TripUpdates.pb"
-        @JvmField val MBTA_GFTS_REALTIME_SERVICE_ALERTS = "http://developer.mbta.com/lib/GTRTFS/Alerts/Alerts.pb"
-        @JvmField val MBTA_GFTS_REALTIME_VEHICLE_POSITIONS = "http://developer.mbta.com/lib/GTRTFS/Alerts/VehiclePositions.pb"
-        @JvmField val TIME_OUT = 1000 * 10000
+        @JvmField
+        val GFTS_REALTIME_TRIP_URL = "http://developer.mbta.com/lib/GTRTFS/Alerts/TripUpdates.pb"
+        @JvmField
+        val MBTA_GFTS_REALTIME_SERVICE_ALERTS = "http://developer.mbta.com/lib/GTRTFS/Alerts/Alerts.pb"
+        @JvmField
+        val MBTA_GFTS_REALTIME_VEHICLE_POSITIONS = "http://developer.mbta.com/lib/GTRTFS/Alerts/VehiclePositions.pb"
+        @JvmField
+        val TIME_OUT = 1000 * 10000
     }
 }

@@ -697,9 +697,9 @@ interface TrainStation {
         val TRAIN_STATIONS: ArrayList<TrainStation> = arrayListOf(*RedStation.values(), *RedStationExtended.values(), *OrangeStation.values(), *BlueStation.values(), *GreenStation.values())
         const val TAG = "TrainStation"
         fun findTrainStationByID(key: String): TrainStation? {
-            for(trainstation in TRAIN_STATIONS) {
-                for(stopID in trainstation.stopIDs) {
-                    if(key == stopID)
+            for (trainstation in TRAIN_STATIONS) {
+                for (stopID in trainstation.stopIDs) {
+                    if (key == stopID)
                         return trainstation
                 }
             }
@@ -707,9 +707,9 @@ interface TrainStation {
             return null
         }
 
-        fun findTrainStationByName(stationName:String):Array<String>? {
+        fun findTrainStationByName(stationName: String): Array<String>? {
             val n = TRAIN_STATIONS.find { it.stationName == stationName }?.stopIDs
-            if(n == null)
+            if (n == null)
                 Log.e(TAG, "Cannot find station:$stationName")
             return n
         }

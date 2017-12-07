@@ -702,6 +702,7 @@ enum class OrangeStation (override val stationName: String, override val line: L
     SULLIVAN_SQUARE("Sullivan Square Station", Line.ORANGE, arrayOf("70030", "70031"), LatLng(42.3830128834, -71.0771012306)),
     //    SULLIVAN_SQUARE_BROADWAY_EXIT("Sullivan Square Station (Broadway Exit)", Line.ORANGE, arrayOf("70030", "70031"), LatLng(0.0, 0.0)),
 //    SULLIVAN_SQUARE_CAMBRIDGE_EXIT("Sullivan Square Station (Cambridge Street Exit)", Line.ORANGE, arrayOf("70030", "70031"), LatLng(0.0, 0.0)),
+    ASSEMBLY("Assembly Station", Line.ORANGE, arrayOf("700278", "700279"), LatLng(42.4042955853, -71.0770046711)),
     WELLINGTON("Wellington Station", Line.ORANGE, arrayOf("70032", "70033"), LatLng(42.4042955853, -71.0770046711)),
     MALDEN_CENTER("Malden Center Station", Line.ORANGE, arrayOf("70034", "70035"), LatLng(42.4273133438, -71.073871851)),
     OAK_GROVE("Oak Grove Station", Line.ORANGE, arrayOf("70036"), LatLng(42.4353430165, -71.071189642));
